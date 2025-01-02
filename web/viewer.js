@@ -303,27 +303,32 @@ function tryCopy( text ) {
 	fetch( url );
 }
 
-document.addEventListener("click", e => {
-	const paragraph = searchUpTheTree( e.target );
+	document.addEventListener("click", e => {
+		const paragraph = searchUpTheTree( e.target );
 
-	if( paragraph instanceof HTMLElement ) {
-		const text = paragraph.textContent;
+		if( paragraph instanceof HTMLElement ) {
+			const text = paragraph.textContent;
 
-		// alert( text );
+			// alert( text );
 
-		tryCopy( text );
-		console.log("ggg", "Got paragarph:", text );
-	}
-});
-
-document.addEventListener("keydown", e => {
-	if( e.key === "v" ) {
-		const viewer = document.getElementById("viewer");
-		if( viewer instanceof HTMLElement ) {
-			viewer.classList.toggle("hide");
+			tryCopy( text );
+			console.log("ggg", "Got paragarph:", text );
 		}
-	}
-});
+	});
+
+	document.addEventListener("keydown", e => {
+		if( e.key === "v" ) {
+			const viewer = document.getElementById("viewer");
+			if( viewer instanceof HTMLElement ) {
+				viewer.classList.toggle("hide");
+			}
+		}
+
+		if( e.key == "Tab" ) {
+			e.preventDefault();
+			PDFViewerApplication.pdfSidebar.toggle();
+		}
+	});
 }
 
 // Block the "load" event until all pages are loaded, to ensure that printing
