@@ -1,9 +1,9 @@
 {
   "update_url": "https://clients2.google.com/service/update2/crx",
   "manifest_version": 2,
-  "name": "PDF Viewer for Vimium C",
+  "name": "增强版 Pdf.js",
   "version": "PDFJSSCRIPT_VERSION",
-  "description": "A PDF Viewer supporting Vimium C shortcuts.",
+  "description": "注入Vimium C的Pdf.js",
   "icons": {
     "128": "icon128.png",
     "48": "icon48.png",
