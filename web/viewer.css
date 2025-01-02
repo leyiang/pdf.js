@@ -1526,3 +1526,20 @@ dialog :link {
     display: none;
   }
 }
+
+.markedContent span::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    top: -10px;
+    bottom: -10px;
+}
+
+.markedContent > span:hover::before {
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+#viewer.hide .markedContent span::before  {
+	pointer-events: none;
+	background-color: transparent;
+}
