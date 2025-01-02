@@ -350,9 +350,29 @@ class PDFLinkService {
         });
       }
       // borrowing syntax from "Parameters for Opening PDF Files"
-      if (params.has("page")) {
-        pageNumber = params.get("page") | 0 || 1;
-      }
+	  function getPageNumberFromUrl(url) {
+		// 创建一个URL对象，但因为url包含chrome-extension协议，直接创建会抛出异常。
+		// 所以我们只对hash部分进行处理。
+		const hashPart = url.split('#')[1]; // 获取#号后的部分
+		if (hashPart) {
+			// 将hash部分按&分割成数组，然后遍历查找page参数
+			const params = hashPart.split('&');
+			for (let param of params) {
+				const [key, value] = param.split('=');
+				if (key === 'page') {
+					return value; // 返回page对应的值
+				}
+			}
+		}
+		return null; // 如果没有找到page参数，则返回null
+	}
+
+	let raw = getPageNumberFromUrl( window.location.href );
+	let myPage = parseInt( raw ) ?? 0;
+
+	if( myPage !== 0 ) {
+		pageNumber = myPage;
+	}
       if (params.has("zoom")) {
         // Build the destination array.
         const zoomArgs = params.get("zoom").split(","); // scale,left,top
