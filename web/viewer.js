@@ -83,6 +83,7 @@ if (typeof PDFJSDev !== "undefined" && PDFJSDev.test("CHROME")) {
     }
   })();
   require("./vimium-c-injector.js");
+  require("./tab-manager-injector.js");
 }
 if (typeof PDFJSDev !== "undefined" && PDFJSDev.test("CHROME || GENERIC")) {
   require("./pdf_print_service.js");
@@ -283,52 +284,6 @@ function webViewerLoad() {
 
     PDFViewerApplication.run(config);
   }
-  function searchUpTheTree( node ) {
-	if( node?.classList?.contains?.("markedContent") ) {
-		return node;
-	}
-
-	if( node.parentNode ) {
-		return searchUpTheTree( node.parentNode );
-	} else {
-		return null;
-	}
-}
-
-
-function tryCopy( text ) {
-	// const image = new Image();
-	const raw = btoa(encodeURI(text))
-	const url = "http://localhost:5000/clipboard?password=my_secret_password&text=" + raw;
-	fetch( url );
-}
-
-	document.addEventListener("click", e => {
-		const paragraph = searchUpTheTree( e.target );
-
-		if( paragraph instanceof HTMLElement ) {
-			const text = paragraph.textContent;
-
-			// alert( text );
-
-			tryCopy( text );
-			console.log("ggg", "Got paragarph:", text );
-		}
-	});
-
-	document.addEventListener("keydown", e => {
-		if( e.key === "v" ) {
-			const viewer = document.getElementById("viewer");
-			if( viewer instanceof HTMLElement ) {
-				viewer.classList.toggle("hide");
-			}
-		}
-
-		if( e.key == "Tab" ) {
-			e.preventDefault();
-			PDFViewerApplication.pdfSidebar.toggle();
-		}
-	});
 }
 
 // Block the "load" event until all pages are loaded, to ensure that printing

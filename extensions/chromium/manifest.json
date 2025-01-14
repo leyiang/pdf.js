@@ -30,7 +30,7 @@
     "css": ["contentstyle.css"],
     "js": ["contentscript.js"]
   }],
-  "content_security_policy": "script-src 'self' 'unsafe-eval' chrome-extension://hfjbmagddngcpeloejdejnfgbamkjaeg/ chrome-extension://aibcglbfblnogfjhbcmmpobjhnomhcdo/; object-src 'self'",
+  "content_security_policy": "script-src 'self' 'unsafe-eval' chrome-extension://hfjbmagddngcpeloejdejnfgbamkjaeg/ chrome-extension://fkbbkhghmikohbaphknfnblohnpnjlac/ ; object-src 'self'",
   "file_browser_handlers": [{
     "id": "open-as-pdf",
     "default_title": "Open with PDF Viewer",
