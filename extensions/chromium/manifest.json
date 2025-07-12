@@ -5,9 +5,9 @@
   "version": "PDFJSSCRIPT_VERSION",
   "description": "注入Vimium C的Pdf.js",
   "icons": {
-    "128": "icon128.png",
-    "48": "icon48.png",
-    "16": "icon16.png"
+    "128": "book.png",
+    "48": "book.png",
+    "16": "book.png"
   },
   "minimum_chrome_version": "73",
   "permissions": [
@@ -51,8 +51,8 @@
   },
   "page_action": {
     "default_icon": {
-      "19": "icon19.png",
-      "38": "icon38.png"
+      "19": "book.png",
+      "38": "book.png"
     },
     "default_title": "Show PDF URL",
     "default_popup": "pageActionPopup.html"
@@ -60,6 +60,7 @@
   "incognito": "split",
   "web_accessible_resources": [
     "content/web/viewer.html",
+    "book.png",
     "icon16.png",
     "icon48.png",
     "http:/*",

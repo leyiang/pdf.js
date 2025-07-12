@@ -66,7 +66,7 @@ function testEmbedMode() {
 }
 
 function onSingleEmbedMode(elem) {
-  var icons = [ ["16x16", "icon16.png"], ["48x48", "icon48.png"] ];
+  var icons = [ ["16x16", "book.png"], ["48x48", "book.png"] ];
   var getURL = chrome.runtime.getURL;
   for (var i = 0; i < icons.length; i++) {
     var link = document.createElement("link");
