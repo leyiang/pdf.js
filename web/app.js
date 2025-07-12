@@ -300,6 +300,9 @@ const PDFViewerApplication = {
       this.eventBus.dispatch("localized", { source: this });
     });
 
+    // 开始每秒打印当前页码的定时器
+    this._setupTabCopyEventListener();
+
     this._initializedCapability.resolve();
   },
 
@@ -328,6 +331,100 @@ const PDFViewerApplication = {
     } catch (reason) {
       console.error(`_readPreferences: "${reason?.message}".`);
     }
+  },
+
+  /**
+   * 监听 Tab Copy 扩展的页码请求事件
+   * @private
+   */
+  _setupTabCopyEventListener() {
+    console.log('[PDF.js] 开始设置Tab Copy事件监听器');
+    
+    let parentLocationInfo = 'same';
+    try {
+      parentLocationInfo = window.parent !== window ? window.parent.location.href : 'same';
+    } catch (e) {
+      parentLocationInfo = 'cross-origin';
+    }
+    
+    console.log('[PDF.js] 当前window信息:', {
+      isTop: window === window.top,
+      isInIframe: window !== window.parent,
+      location: window.location.href,
+      parentLocation: parentLocationInfo
+    });
+    
+    // 获取页码信息的函数
+    const getPdfInfo = () => {
+      console.log('[PDF.js] Tab Copy请求获取页码信息');
+      console.log('[PDF.js] 当前pdfViewer状态:', {
+        pdfViewer: !!this.pdfViewer,
+        currentPageNumber: this.pdfViewer?.currentPageNumber,
+        pagesCount: this.pdfViewer?.pagesCount,
+        baseUrl: this.baseUrl
+      });
+      
+      if (this.pdfViewer && this.pdfViewer.currentPageNumber) {
+        const currentPage = this.pdfViewer.currentPageNumber;
+        const totalPages = this.pdfViewer.pagesCount;
+        const fileName = this.baseUrl ? 
+          this.baseUrl.split('/').pop() : 
+          document.title.replace(' - PDF.js viewer', '');
+
+        const pdfInfo = {
+          type: 'tab-copy-pdf-info',
+          currentPage: currentPage,
+          totalPages: totalPages,
+          fileName: fileName
+        };
+
+        console.log('[PDF.js] 返回页码信息:', pdfInfo);
+        return pdfInfo;
+      } else {
+        console.warn('[PDF.js] PDF未加载或页码信息不可用');
+        return { type: 'tab-copy-pdf-info', error: 'PDF not loaded' };
+      }
+    };
+    
+    // 监听所有postMessage
+    window.addEventListener('message', (event) => {
+      console.log('[PDF.js] 收到postMessage:', event);
+      console.log('[PDF.js] event.data:', event.data);
+      console.log('[PDF.js] event.origin:', event.origin);
+      
+      if (event.data && event.data.type === 'tab-copy-request-info') {
+        console.log('[PDF.js] 收到Tab Copy扩展的页码请求 (postMessage)');
+        
+        const pdfInfo = getPdfInfo();
+        
+        // 回复postMessage
+        if (event.source) {
+          event.source.postMessage(pdfInfo, event.origin);
+          console.log('[PDF.js] 通过postMessage回复页码信息到source');
+        }
+        
+        // 也向parent发送
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage(pdfInfo, '*');
+          console.log('[PDF.js] 通过postMessage发送到parent window');
+        }
+      }
+    });
+    
+    // 在全局暴露函数作为备选
+    if (typeof window !== 'undefined') {
+      window.getTabCopyPdfInfo = getPdfInfo;
+      console.log('[PDF.js] 在当前window暴露了getTabCopyPdfInfo函数');
+    }
+    
+    // 保留事件监听作为备选
+    document.addEventListener('tab-copy-request-info', () => {
+      console.log('[PDF.js] 收到CustomEvent事件，通过事件发送响应');
+      const info = getPdfInfo();
+      document.dispatchEvent(new CustomEvent('tab-copy-pdf-info', { detail: info }));
+    });
+    
+    console.log('[PDF.js] Tab Copy事件监听器设置完成 (postMessage + 全局函数 + CustomEvent)');
   },
 
   /**
