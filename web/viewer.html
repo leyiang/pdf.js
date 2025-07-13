@@ -27,6 +27,7 @@ See https://github.com/adobe-type-tools/cmap-resources
 <!--#if GENERIC || CHROME-->
     <meta name="google" content="notranslate">
 <!--#endif-->
+    <meta http-equiv="Permissions-Policy" content="clipboard-read=*, clipboard-write=*">
     <title>PDF.js viewer</title>
 
 <!--#if MOZCENTRAL-->
@@ -245,6 +246,11 @@ See https://github.com/adobe-type-tools/cmap-resources
               </div>
               <div id="toolbarViewerRight" class="toolbarHorizontalGroup">
                 <div id="editorModeButtons" class="toolbarHorizontalGroup" role="radiogroup">
+                  <div id="refPdf" class="toolbarButtonWithContainer">
+                    <button id="refPdfButton" class="toolbarButton" type="button" tabindex="0" data-l10n-id="pdfjs-editor-refpdf-button" title="Ref PDF">
+                      <span data-l10n-id="pdfjs-editor-refpdf-button-label">R</span>
+                    </button>
+                  </div>
                   <div id="editorSignature" class="toolbarButtonWithContainer" hidden="true">
                     <button id="editorSignatureButton" class="toolbarButton" type="button" tabindex="0" disabled="disabled" role="radio" aria-expanded="false" aria-haspopup="true" aria-controls="editorSignatureParamsToolbar" data-l10n-id="pdfjs-editor-signature-button">
                       <span data-l10n-id="pdfjs-editor-signature-button-label"></span>
@@ -331,11 +337,6 @@ See https://github.com/adobe-type-tools/cmap-resources
                         </button>
                       </div>
                     </div>
-                  </div>
-                  <div id="refPdf" class="toolbarButtonWithContainer">
-                    <button id="refPdfButton" class="toolbarButton" type="button" tabindex="0" data-l10n-id="pdfjs-editor-refpdf-button" title="Ref PDF">
-                      <span data-l10n-id="pdfjs-editor-refpdf-button-label">R</span>
-                    </button>
                   </div>
                 </div>
 

@@ -21,6 +21,7 @@ import {
   DEFAULT_SCALE_VALUE,
   MAX_SCALE,
   MIN_SCALE,
+  showNotification,
   toggleExpandedBtn,
 } from "./ui_utils.js";
 
@@ -204,7 +205,105 @@ class Toolbar {
     for (const { element, eventName, eventDetails, telemetry } of buttons) {
       element.addEventListener("click", evt => {
         if (element === this.#opts.refPdfButton) {
-          alert("Ref PDF button clicked! RefPdf按钮被点击了！");
+          // 获取PDF文档的标题
+          const title = window.PDFViewerApplication?._docTitle || 
+                       window.PDFViewerApplication?._docFilename || 
+                       "Unknown PDF";
+          
+          // 获取当前页码
+          const currentPage = window.PDFViewerApplication?.page || 1;
+          
+          // 获取当前URL并处理页码参数
+          let currentUrl = new URL(window.location.href);
+          
+          // 如果是Chrome扩展URL，提取其中的file://部分
+          if (currentUrl.href.includes('chrome-extension://') && currentUrl.href.includes('file://')) {
+            const fileUrlMatch = currentUrl.href.match(/file:\/\/[^#&?]*/);
+            if (fileUrlMatch) {
+              const fileUrl = fileUrlMatch[0];
+              const hash = currentUrl.hash;
+              // 重新构建URL，只使用file://部分
+              currentUrl = new URL(fileUrl + hash);
+            }
+          }
+          
+          const hash = currentUrl.hash;
+          
+          let newHash = '';
+          if (hash.includes('page=')) {
+            // 如果URL已包含page参数，替换页码
+            newHash = hash.replace(/page=\d+/, `page=${currentPage}`);
+          } else if (hash.length > 1) {
+            // 如果有其他hash参数，添加&page=
+            newHash = `${hash}&page=${currentPage}`;
+          } else {
+            // 如果没有hash，添加#page=
+            newHash = `#page=${currentPage}`;
+          }
+          
+          // 构建完整的URL
+          const resultUrl = `${currentUrl.origin}${currentUrl.pathname}${currentUrl.search}${newHash}`;
+          
+          // 构建Markdown格式的字符串
+          const markdownString = `[${title} + page ${currentPage}](${resultUrl})`;
+          
+          // 将Markdown字符串写入剪贴板
+          const copyToClipboard = async (text) => {
+            console.log('🔍 检查剪贴板权限...');
+            console.log('navigator.clipboard:', !!navigator.clipboard);
+            console.log('navigator.clipboard.writeText:', !!navigator.clipboard?.writeText);
+            
+            // 方法1: 尝试使用现代Clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              try {
+                console.log('📋 尝试使用Clipboard API...');
+                await navigator.clipboard.writeText(text);
+                console.log('✅ Clipboard API成功');
+                return true;
+              } catch (error) {
+                console.error('❌ Clipboard API失败:', error);
+                console.log('🔄 降级到execCommand...');
+              }
+            }
+            
+            // 方法2: 降级处理 - 使用execCommand
+            return new Promise((resolve) => {
+              const textArea = document.createElement('textarea');
+              textArea.value = text;
+              textArea.style.position = 'fixed';
+              textArea.style.left = '-9999px';
+              textArea.style.top = '-9999px';
+              textArea.style.opacity = '0';
+              textArea.setAttribute('readonly', '');
+              textArea.setAttribute('tabindex', '-1');
+              document.body.appendChild(textArea);
+              
+              try {
+                textArea.focus();
+                textArea.select();
+                textArea.setSelectionRange(0, textArea.value.length);
+                
+                const successful = document.execCommand('copy');
+                console.log(successful ? '✅ execCommand成功' : '❌ execCommand失败');
+                document.body.removeChild(textArea);
+                resolve(successful);
+              } catch (err) {
+                console.error('❌ execCommand异常:', err);
+                document.body.removeChild(textArea);
+                resolve(false);
+              }
+            });
+          };
+          
+          // 执行复制操作
+          copyToClipboard(markdownString).then(success => {
+            if (success) {
+              showNotification(`引用链接已复制: ${title} (第${currentPage}页)`, true);
+            } else {
+              // 如果复制失败，显示内容以便手动复制
+              showNotification(`复制失败，请手动复制: ${markdownString}`, false, 8000);
+            }
+          });
           return;
         }
         if (eventName !== null) {

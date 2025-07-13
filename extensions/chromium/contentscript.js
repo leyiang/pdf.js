@@ -208,6 +208,8 @@ function createFullSizeIframe() {
   iframe.style.transform = "none";
   iframe.style.visibility = "visible";
   iframe.style.width = "100%";
+  // Add clipboard permissions for the iframe
+  iframe.allow = "clipboard-read; clipboard-write";
   return iframe;
 }
 
@@ -256,6 +258,8 @@ function maybeRenderPdfDoc(isNotPOST) {
   iframe.style.width = "100%";
   iframe.style.height = "100%";
   iframe.style.border = "0 none";
+  // Add clipboard permissions for the iframe
+  iframe.allow = "clipboard-read; clipboard-write";
   iframe.src = getEmbeddedViewerURL(document.URL);
   shadowRoot.append(iframe);
 }

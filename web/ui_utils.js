@@ -866,6 +866,55 @@ const calcRound =
         return e.style.width === "calc(1320px)" ? Math.fround : x => x;
       })();
 
+/**
+ * 显示一个优雅的通知消息
+ * @param {string} message - 要显示的消息
+ * @param {boolean} isSuccess - 是否为成功消息（影响颜色）
+ * @param {number} duration - 显示持续时间（毫秒），默认3000
+ */
+function showNotification(message, isSuccess = true, duration = 3000) {
+  // 移除之前的通知（如果存在）
+  const existingNotification = document.getElementById('pdfjs-notification');
+  if (existingNotification) {
+    existingNotification.remove();
+  }
+  
+  // 创建通知元素
+  const notification = document.createElement('div');
+  notification.id = 'pdfjs-notification';
+  notification.style.cssText = `
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: system-ui, -apple-system, sans-serif;
+    max-width: 400px;
+    word-wrap: break-word;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: opacity 0.3s ease;
+    ${isSuccess ? 
+      'background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724;' : 
+      'background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24;'
+    }
+  `;
+  notification.textContent = message;
+  
+  // 添加到页面
+  document.body.appendChild(notification);
+  
+  // 自动移除
+  setTimeout(() => {
+    if (notification.parentNode) {
+      notification.style.opacity = '0';
+      setTimeout(() => notification.remove(), 300);
+    }
+  }, duration);
+}
+
 export {
   animationStarted,
   apiPageLayoutToViewerModes,
@@ -909,4 +958,5 @@ export {
   UNKNOWN_SCALE,
   VERTICAL_PADDING,
   watchScroll,
+  showNotification,
 };
