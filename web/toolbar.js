@@ -131,6 +131,10 @@ class Toolbar {
           },
         },
       },
+      {
+        element: options.refPdfButton,
+        eventName: null,
+      },
     ];
 
     // Bind the event listeners for click and various other actions.
@@ -199,6 +203,10 @@ class Toolbar {
     // The buttons within the toolbar.
     for (const { element, eventName, eventDetails, telemetry } of buttons) {
       element.addEventListener("click", evt => {
+        if (element === this.#opts.refPdfButton) {
+          alert("Ref PDF button clicked! RefPdf按钮被点击了！");
+          return;
+        }
         if (eventName !== null) {
           eventBus.dispatch(eventName, {
             source: this,

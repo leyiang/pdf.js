@@ -66,6 +66,7 @@ function getViewerConfiguration() {
       editorSignatureParamsToolbar: document.getElementById(
         "editorSignatureParamsToolbar"
       ),
+      refPdfButton: document.getElementById("refPdfButton"),
       download: document.getElementById("downloadButton"),
     },
     secondaryToolbar: {
