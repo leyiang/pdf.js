@@ -25,6 +25,17 @@ const isNodeJS =
   !process.versions.nw &&
   !(process.versions.electron && process.type && process.type !== "browser");
 
+// Polyfill for URL.parse() which is not available in older browsers
+if (!URL.parse) {
+  URL.parse = function(url, base) {
+    try {
+      return base ? new URL(url, base) : new URL(url);
+    } catch (e) {
+      return null;
+    }
+  };
+}
+
 const FONT_IDENTITY_MATRIX = [0.001, 0, 0, 0.001, 0, 0];
 
 // Represent the percentage of the height of a single-line field over
