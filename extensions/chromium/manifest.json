@@ -46,6 +46,7 @@
     {
       "resources": [
         "content/web/viewer.html",
+        "icon.svg",
         "http:/*",
         "https:/*",
         "file:/*",

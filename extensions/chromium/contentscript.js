@@ -22,6 +22,22 @@ function getViewerURL(pdf_url) {
   return VIEWER_URL + "?file=" + encodeURIComponent(pdf_url);
 }
 
+function setPageFavicon() {
+  // Set custom favicon for PDF pages
+  const iconUrl = chrome.runtime.getURL("icon.svg");
+  const existingIcon = document.querySelector('link[rel*="icon"]');
+  
+  if (existingIcon) {
+    existingIcon.href = iconUrl;
+  } else {
+    const favicon = document.createElement('link');
+    favicon.rel = 'icon';
+    favicon.type = 'image/svg+xml';
+    favicon.href = iconUrl;
+    document.head.appendChild(favicon);
+  }
+}
+
 document.addEventListener("animationstart", onAnimationStart, true);
 if (document.contentType === "application/pdf") {
   chrome.runtime.sendMessage({ action: "canRequestBody" }, maybeRenderPdfDoc);
@@ -131,6 +147,9 @@ function updateEmbedElement(elem) {
   }
   elem.type = "text/html";
   elem.src = getEmbeddedViewerURL(elem.src);
+  
+  // Set custom favicon for PDF pages
+  setPageFavicon();
 
   if (parentNode) {
     // Suppress linter warning: insertBefore is preferable to
@@ -167,6 +186,9 @@ function updateObjectElement(elem) {
     iframe.__inserted_by_pdfjs = true;
   }
   iframe.src = getEmbeddedViewerURL(elem.data);
+  
+  // Set custom favicon for PDF pages
+  setPageFavicon();
 
   // Some bogus content type that is not handled by any plugin.
   elem.type = "application/not-a-pee-dee-eff-type";
@@ -243,6 +265,9 @@ function maybeRenderPdfDoc(isNotPOST) {
 
   // In any case, load the viewer.
   console.log(`Detected PDF via document, opening viewer for ${document.URL}`);
+  
+  // Set custom favicon for PDF pages
+  setPageFavicon();
 
   // Ideally we would use logic consistent with the DNR logic, like this:
   // location.href = getEmbeddedViewerURL(document.URL);

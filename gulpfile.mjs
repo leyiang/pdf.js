@@ -1583,6 +1583,9 @@ gulp.task(
           .src("LICENSE", { encoding: false })
           .pipe(gulp.dest(CHROME_BUILD_DIR)),
         gulp
+          .src("icon.svg", { encoding: false })
+          .pipe(gulp.dest(CHROME_BUILD_DIR)),
+        gulp
           .src("extensions/chromium/manifest.json", { encoding: false })
           .pipe(replace(/\bPDFJSSCRIPT_VERSION\b/g, version))
           .pipe(gulp.dest(CHROME_BUILD_DIR)),
