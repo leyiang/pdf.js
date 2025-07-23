@@ -291,6 +291,18 @@ function webViewerLoad() {
     }
   }
   PDFViewerApplication.run(config);
+  
+  // FIX: Force focus the window if document doesn't have focus after loading
+  setTimeout(() => {
+    if (!document.hasFocus()) {
+      window.focus();
+      // Also try to focus the viewer container
+      const viewerContainer = document.getElementById('viewer');
+      if (viewerContainer) {
+        viewerContainer.focus();
+      }
+    }
+  }, 1000);
 }
 
 // Block the "load" event until all pages are loaded, to ensure that printing

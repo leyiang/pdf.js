@@ -1332,6 +1332,17 @@ const PDFViewerApplication = {
 
       firstPagePromise.then(() => {
         this.eventBus.dispatch("documentloaded", { source: this });
+        
+        // FIX: Try to gain document focus after first page loads
+        if (!document.hasFocus()) {
+          window.focus();
+          // Also try to focus the PDF viewer
+          setTimeout(() => {
+            if (this.pdfViewer) {
+              this.pdfViewer.focus();
+            }
+          }, 100);
+        }
       });
     });
 
