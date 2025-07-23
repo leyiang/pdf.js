@@ -2793,6 +2793,12 @@ function onKeyDown(evt) {
     (evt.shiftKey ? 4 : 0) |
     (evt.metaKey ? 8 : 0);
 
+  // Handle Tab key for sidebar toggle (prevent default tab behavior)
+  if (evt.keyCode === 9 && !evt.ctrlKey && !evt.altKey && !evt.metaKey) {
+    this.pdfSidebar?.toggle();
+    handled = true;
+  }
+
   // First, handle the key bindings that are independent whether an input
   // control is selected or not.
   if (cmd === 1 || cmd === 8 || cmd === 5 || cmd === 12) {
